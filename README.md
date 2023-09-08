@@ -7,8 +7,13 @@ It can actually do more than just testing if you write prompts! And it's easy to
 1. [Python](https://www.python.org/) >= 3.10
 3. [openai python sdk](https://github.com/openai/openai-python)
 
-# Setting up openai key and endpoint
-you can set them through the environment variables.
+# Setting up openai key and endpoint before continue
+you can set them through the environment variables. here is what we use to access the key and endpoint:
+
+```python
+openai.api_key = os.getenv("OPENAI_KEY")
+openai.api_base = os.getenv("OPENAI_ENDPOINT")
+```
 
 # Usage
 ```python
@@ -25,7 +30,7 @@ python testboy.py unmoq examples\MoqExample.cs
 
 # Customize
 You can easily customize via writing new Prompts, here's an example:
-in [prompts.py][prompts.py], add a new class called `RemoveApple` which inherits `Prompt`
+in [prompts.py](prompts.py), add a new class called `RemoveApple` which inherits `Prompt`
 
 ```python
 class RemoveApple(Prompt):
