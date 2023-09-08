@@ -49,3 +49,13 @@ def bad_apple(input, output):
     ])
     context.dump(output)
 ```
+
+you can also combine different prompts to solve complex tasks. see our example to generate a nice unit test code:
+
+```python
+context.prompt_chaining([
+    Test(),   # generate test code first
+    Format(), # re-format the code to meet your requirements
+    Comment() # write comments in case you need
+])
+```
