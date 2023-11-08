@@ -1,0 +1,19 @@
+AppSettings:
+  # use azure key vault to retrieve api key and endpoint or use environment variables
+  UseAzureKeyVault: True
+
+# environment variable names
+EnvironmentVariableSettings:
+  openai_key: OPENAI_KEY
+  openai_endpoint: OPENAI_ENDPOINT
+
+# azure key vault settings containing key vault name and secret names
+AzureKeyVaultSettings:
+  key_vault_name: PasswordAndAPIKey
+  openai_key_name: OpenAIKey
+  openai_endpoint_name: OpenAIEndpoint
+
+ChromaSettings:
+  persist_directory: /tmp
+  documents_directory: /home/chobits/github/documents
+  collection_name: testboy

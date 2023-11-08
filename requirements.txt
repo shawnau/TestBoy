@@ -1,0 +1,5 @@
+azure-identity
+azure-keyvault-secrets
+chromadb>=0.4.4
+openai
+tqdm
