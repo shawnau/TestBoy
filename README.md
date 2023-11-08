@@ -1,61 +1,40 @@
 # TestBoy
-TestBoy writes unit tests for your code using GPT prompt chaining.
-It can actually do more than just testing if you write prompts! And it's easy to extend!
+TestBoy writes unit tests for your code using GPT prompt chaining, which means you can combine different prompts to solve complex tasks, or use them individually.
+It will also retrieve related document from your documents to instruct GPT for your query.
 
-# Requirements
 
-1. [Python](https://www.python.org/) >= 3.10
-3. [openai python sdk](https://github.com/openai/openai-python)
-
-# Setting up openai key and endpoint before continue
-you can set them through the environment variables. here is what we use to access the key and endpoint:
-
-```python
-openai.api_key = os.getenv("OPENAI_KEY")
-openai.api_base = os.getenv("OPENAI_ENDPOINT")
+```text
+query ---> query+doc ---> GPT
+  |            ^
+  |            |
+  v            |
+documents vector DB
 ```
+
+# Install
+
+```bash
+pip install -r requirements.txt
+```
+
+# Settings
+Please refer to [config.yaml](config.yaml)
 
 # Usage
-```python
-# test code, will generate test file with filename = CodeExampleTests.cs
-python testboy.py test examples\CodeExample.cs
-
-# in-place add comments to your code
-python testboy.py comment examples\CodeExample.cs
-
-# in-place convert Moq to NSubstitute
-python testboy.py unmoq examples\MoqExample.cs
-
-```
-
-# Customize
-You can easily customize via writing new Prompts, here's an example:
-in [prompts.py](prompts.py), add a new class called `RemoveApple` which inherits `Prompt`
 
 ```python
-class RemoveApple(Prompt):
-    @property
-    def base_prompt(self) -> str:
-        return f"""We define apple as a bad word. Please remove or rename it in the given code."""
+import testboy
+# initialize settings from config.yaml
+testboy.config('config.yaml')
+
+from testboy.session import Session
+
+# set input and output to paths of the code
+Session(code_paths=['CodeExample.cs']).execute([
+    "Write unit tests for the code.", # first, write the test
+    "Format the tests.", # then, format the code according your use
+    "Add comment for the tests." # finally, add comments
+]).dump('CodeExampleTest.cs')
 ```
 
-then, just call it!
-
-```python
-def bad_apple(input, output):
-    context = Context([input])
-    context.prompt_chaining([
-        RemoveApple()
-    ])
-    context.dump(output)
-```
-
-you can also combine different prompts to solve complex tasks. see our example to generate a nice unit test code:
-
-```python
-context.prompt_chaining([
-    Test(),   # generate test code first
-    Format(), # re-format the code to meet your requirements
-    Comment() # write comments in case you need
-])
-```
+For more details, please refer to the [example.ipynb](example.ipynb)

@@ -29,7 +29,10 @@ def initialize_documents(
     for i in tqdm(
         range(0, len(documents)), desc="Adding documents"
     ):
-        if chroma_collection.get(where={"filename": metadatas[i]["filename"]}):
+        results = chroma_collection.get(
+            where={"filename": metadatas[i]["filename"]}, 
+            include=[ "documents" ])
+        if len(results['documents']) > 0:
             print(f"Document {metadatas[i]['filename']} already exists, skipping")
             continue
         chroma_collection.add(

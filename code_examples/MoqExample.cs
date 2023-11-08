@@ -1,6 +1,6 @@
 namespace MoqToNSubstituteExampleNamespace
 {
-    using NSubstitute;
+    using Moq;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -19,17 +19,17 @@ namespace MoqToNSubstituteExampleNamespace
         public void Add_Should_Call_Add_Method_From_CalculatorService()
         {
             // Arrange
-            var calculatorServiceMock = Substitute.For<ICalculatorService>();
-            calculatorServiceMock.Add(2, 3).Returns(5); // Mocking the Add method
+            var calculatorServiceMock = new Mock<ICalculatorService>();
+            calculatorServiceMock.Setup(x => x.Add(2, 3)).Returns(5); // Mocking the Add method
 
-            var calculator = new Calculator(calculatorServiceMock);
+            var calculator = new Calculator(calculatorServiceMock.Object);
 
             // Act
             int result = calculator.Add(2, 3);
 
             // Assert
             Assert.AreEqual(5, result);
-            calculatorServiceMock.Received(1).Add(2, 3); // Verify that the Add method was called with arguments 2 and 3
+            calculatorServiceMock.Verify(x => x.Add(2, 3), Times.Once); // Verify that the Add method was called with arguments 2 and 3
         }
     }
 }

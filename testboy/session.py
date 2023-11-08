@@ -1,18 +1,20 @@
 import os
 import openai
-from . import api_key, api_base
+from . import settings
 from .prompt import Prompt
 from .io_utils import load_file, dump_file, extract_code
 
-openai.api_key = api_key
-openai.api_base = api_base
+if not settings.initialized:
+    raise RuntimeError("You must call testboy.config('your_config.yaml') before using this function.")
+
+openai.api_key = settings.api_key
+openai.api_base = settings.api_base
 
 class Session:
     def __init__(self, 
                  code_paths: list[str] = None, 
                  raw_inputs: list[str] = None,
-                 class_name: str = None, 
-                 model_name: str = 'gpt-4', 
+                 model_name: str = settings.model, 
                  refresh_session: bool = False,
                  debug: bool = False):
         """init context based on code paths
@@ -34,10 +36,7 @@ class Session:
             self.input = '\n'.join([load_file(code_path) for code_path in code_paths])
         else:
             self.input = '\n'.join(raw_inputs)
-        self.file_name = os.path.basename(code_paths[0])
-        self.class_name = class_name if class_name != None else os.path.basename(code_paths[0]).split('.')[0]
-    
-    
+        
     def invoke_api(self, prompt: list[dict[str, str]]) -> str:
         """Invoke openai api to generate response containing test code
 
@@ -50,7 +49,7 @@ class Session:
         return openai.ChatCompletion.create(
             model=self.model_name,
             messages = prompt,
-            temperature=0.7,
+            temperature=0.5,
             max_tokens=4096,
             top_p=0.95,
             frequency_penalty=0,
@@ -65,7 +64,7 @@ class Session:
         """
         for query in queries:
             print(f'{query}...')
-            user_prompt = Prompt(query).get_prompt(self.input, len(self.prompts) == 0)
+            user_prompt = Prompt(query).get_prompt(self.input, settings.chroma_collection, len(self.prompts) == 0)
             self.prompts += user_prompt
             response = self.invoke_api(self.prompts)
             response_msg = response.choices[0].message
@@ -87,4 +86,10 @@ class Session:
             output_path (str): dump file path
         """
         dump_file(output_path, self.input)
+    
+    def render(self):
+        """render code in jupyter notebook
+        """
+        from IPython.display import display, Markdown
+        display(Markdown(f"""```csharp\n{self.input}\n```"""))
 

@@ -1,19 +1,24 @@
 AppSettings:
-  # use azure key vault to retrieve api key and endpoint or use environment variables
-  UseAzureKeyVault: True
+  # True: use azure key vault to retrieve api key and endpoint
+  # False: use environment variables to retrieve api key and endpoint
+  UseAzureKeyVault: False
+  # gpt-3.5-turbo, gpt-4
+  Model: gpt-4
 
 # environment variable names
 EnvironmentVariableSettings:
   openai_key: OPENAI_KEY
   openai_endpoint: OPENAI_ENDPOINT
 
-# azure key vault settings containing key vault name and secret names
+# azure key vault settings containing key vault name and secret names for openai key and endpoint
 AzureKeyVaultSettings:
-  key_vault_name: PasswordAndAPIKey
-  openai_key_name: OpenAIKey
-  openai_endpoint_name: OpenAIEndpoint
+  key_vault_name: 
+  openai_key_name: 
+  openai_endpoint_name: 
 
+# Chroma settings including persist directory, documents directory, and collection name
 ChromaSettings:
   persist_directory: /tmp
-  documents_directory: /home/chobits/github/documents
+  # folder to hold the documents. Put yout documents here.
+  documents_directory: data
   collection_name: testboy

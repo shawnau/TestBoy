@@ -1,4 +1,3 @@
-import os
 import re
 
 def dump_file(file_name, code):
